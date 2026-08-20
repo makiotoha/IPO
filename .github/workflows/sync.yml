@@ -1,0 +1,50 @@
+name: A股新股同步
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 北京时间17:30
+    # UTC 09:30
+    - cron: "30 9 * * 1-5"
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install requirements
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run sync
+        env:
+          MAIRUI_LICENCE: ${{ secrets.MAIRUI_LICENCE }}
+        run: |
+          python sync_mairui.py
+
+      # 【新增步骤】运行转 ICS 脚本生成 ipo.ics
+      - name: Generate ICS File
+        run: |
+          python generate_ics.py
+
+      # 【修改步骤】同时将 stocks.json 和 ipo.ics 一起提交并推送
+      - name: Commit stocks.json and ipo.ics
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add stocks.json ipo.ics
+          git commit -m "update stocks data and ipo.ics" || exit 0
+          git push
