@@ -1,11 +1,11 @@
 name: A股新股同步
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: # 允许 API 或手动触发
   schedule:
-    # 北京时间18:00
-    # UTC 10:00
-    - cron: "0 10 * * *"
+    # 北京时间18:17
+    # UTC 10:17
+    - cron: "17 10 * * *"
 
 permissions:
   contents: write
