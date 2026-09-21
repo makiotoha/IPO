@@ -2,10 +2,10 @@ name: A股新股同步
 
 on:
   workflow_dispatch: # 允许 API 或手动触发
-  schedule:
+  # （删除#及此段内容，恢复时间设定）schedule:
     # 北京时间18:17
     # UTC 10:17
-    - cron: "17 10 * * *"
+    # （删除#及此段内容，恢复时间设定）- cron: "17 10 * * *"
 
 permissions:
   contents: write
